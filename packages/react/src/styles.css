@@ -1,0 +1,127 @@
+/* Cascade Cards Styles */
+
+/* Base card animations and styling are handled by Radix UI and Tailwind */
+/* Custom styles for enhanced hover behaviors */
+
+/* HoverKit timing variables */
+:root {
+  --hover-card-fade-duration: 500ms;
+  --hover-card-pop-delay: 175ms;
+  --hover-card-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --hover-card-ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Highlighted terms - base styles */
+[data-hoverkit-term] {
+  @apply cursor-help transition-all duration-200;
+}
+
+/* Default highlight style */
+[data-hoverkit-match="true"] {
+  @apply bg-amber-100 hover:bg-amber-200 border border-amber-300 rounded-sm px-0.5;
+}
+
+/* Loading spinner animation */
+@keyframes hoverkit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hoverkit-loading {
+  animation: hoverkit-spin 1s linear infinite;
+}
+
+/* Custom animations for card states */
+@keyframes hover-card-fade-out {
+  from {
+    opacity: 1;
+    transform: translateZ(0) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateZ(0) translateY(-6px);
+  }
+}
+
+@keyframes hover-card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateZ(0) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(0) translateY(0);
+  }
+}
+
+/* Apply animations based on state */
+[data-stack-state] {
+  will-change: transform, opacity;
+}
+
+[data-stack-state="entering"] {
+  animation: hover-card-fade-in var(--hover-card-fade-duration) var(--hover-card-ease-out) forwards;
+}
+
+[data-stack-state="closing"] {
+  animation: hover-card-fade-out var(--hover-card-fade-duration) var(--hover-card-ease-in) forwards;
+}
+
+[data-stack-state="scheduled-close"][data-is-top="true"] {
+  opacity: 0.9;
+  transition: opacity 100ms ease-out;
+}
+
+/* Card stacking z-index management */
+[data-hoverkit-card] {
+  z-index: calc(1000 + var(--hoverkit-card-level, 0));
+}
+
+/* Prevent text selection during hover interactions */
+[data-hoverkit-highlighter] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+}
+
+[data-hoverkit-term]:hover {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Focus styles for accessibility */
+[data-hoverkit-term]:focus {
+  @apply ring-2 ring-blue-500 ring-offset-1 outline-none;
+}
+
+/* Mobile-friendly tap targets */
+@media (max-width: 768px) {
+  [data-hoverkit-term] {
+    @apply min-h-[44px] min-w-[44px] inline-flex items-center justify-center;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  [data-hoverkit-match="true"] {
+    @apply bg-yellow-200 border-2 border-black;
+  }
+  
+  [data-hoverkit-term]:focus {
+    @apply ring-4 ring-blue-600;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  [data-hoverkit-term] {
+    @apply transition-none;
+  }
+  
+  [data-state=open],
+  [data-state=closed] {
+    animation: none !important;
+  }
+}
