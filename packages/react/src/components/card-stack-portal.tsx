@@ -79,22 +79,16 @@ function StackedCard({ cardId }: { cardId: string }) {
       y = card.position.y + Math.sin(angle) * offset;
     }
 
-    // Viewport clamping - different constraints for root vs stacked cards
+    // Viewport clamping - cards are max 50vh tall, 20rem wide
     const padding = 20;
-    const halfCardWidth = 128;
-    const halfCardHeight = 200;
+    const cardWidth = Math.min(320, window.innerWidth * 0.9); // 20rem or 90vw
+    const halfCardWidth = cardWidth / 2;
+    const maxCardHeight = window.innerHeight * 0.5; // 50vh
+    const halfCardHeight = maxCardHeight / 2;
     
-    if (card.level === 0) {
-      // Root cards: minimal clamping, allow positioning below trigger
-      // Only prevent cards from going completely off-screen
-      x = Math.max(padding + halfCardWidth, Math.min(window.innerWidth - (padding + halfCardWidth), x));
-      // For Y, ensure the card is at least partially visible (allow negative top if needed for triggers near top)
-      y = Math.max(halfCardHeight, Math.min(window.innerHeight - padding - 50, y));
-    } else {
-      // Stacked cards: more aggressive clamping to keep in comfortable viewport area
-      x = Math.max(padding + halfCardWidth, Math.min(window.innerWidth - (padding + halfCardWidth), x));
-      y = Math.max(padding + halfCardHeight, Math.min(window.innerHeight - (padding + halfCardHeight), y));
-    }
+    // Always keep cards fully on screen
+    x = Math.max(padding + halfCardWidth, Math.min(window.innerWidth - (padding + halfCardWidth), x));
+    y = Math.max(padding + halfCardHeight, Math.min(window.innerHeight - (padding + halfCardHeight), y));
 
     return {
       position: 'absolute',
@@ -278,7 +272,7 @@ function StackedCard({ cardId }: { cardId: string }) {
             </h3>
 
             {card.isLoading ? (
-              <div className="flex items-center justify-center rounded-xl border border-white/5 bg-white/5 py-8">
+              <div className="hoverkit-card-loading flex items-center justify-center rounded-xl border border-white/5 bg-white/5 py-8">
                 <span className="relative flex h-8 w-8">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gradient-to-r from-purple-400/50 via-pink-400/50 to-sky-400/50 opacity-75" />
                   <span className="relative inline-flex h-8 w-8 rounded-full bg-gradient-to-r from-purple-500 to-sky-400" />
@@ -287,14 +281,14 @@ function StackedCard({ cardId }: { cardId: string }) {
             ) : card.content ? (
               <div
                 ref={contentRef}
-                className="relative space-y-3 text-xs text-slate-300 [&>h1]:text-sm [&>h1]:font-semibold [&>h1]:mb-1 [&>h1]:text-white [&>h2]:text-xs [&>h2]:font-semibold [&>h2]:mb-1 [&>h2]:text-slate-100 [&>h3]:text-xs [&>h3]:font-semibold [&>h3]:mb-1 [&>h3]:text-slate-200 [&_strong]:font-semibold [&_strong]:text-slate-100"
+                className="hoverkit-card-content relative space-y-3 text-xs text-slate-300 [&>h1]:text-sm [&>h1]:font-semibold [&>h1]:mb-1 [&>h1]:text-white [&>h2]:text-xs [&>h2]:font-semibold [&>h2]:mb-1 [&>h2]:text-slate-100 [&>h3]:text-xs [&>h3]:font-semibold [&>h3]:mb-1 [&>h3]:text-slate-200 [&_strong]:font-semibold [&_strong]:text-slate-100"
               >
                 {renderedMarkdown}
                 <div className="pt-8" aria-hidden />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" aria-hidden />
+                <div className="hoverkit-fade-gradient pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" aria-hidden />
               </div>
             ) : (
-              <div className="rounded-lg border border-white/5 bg-white/5 px-4 py-5 text-xs text-slate-400">
+              <div className="hoverkit-empty-state rounded-lg border border-white/5 bg-white/5 px-4 py-5 text-xs text-slate-400">
                 No content available
               </div>
             )}

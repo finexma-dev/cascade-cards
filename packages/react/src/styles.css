@@ -13,12 +13,24 @@
 
 /* Highlighted terms - base styles */
 [data-hoverkit-term] {
-  @apply cursor-help transition-all duration-200;
+  cursor: help;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
 }
 
 /* Default highlight style */
 [data-hoverkit-match="true"] {
-  @apply bg-amber-100 hover:bg-amber-200 border border-amber-300 rounded-sm px-0.5;
+  background-color: rgb(254 243 199); /* amber-100 */
+  border-width: 1px;
+  border-color: rgb(252 211 77); /* amber-300 */
+  border-radius: 0.125rem;
+  padding-left: 0.125rem;
+  padding-right: 0.125rem;
+}
+
+[data-hoverkit-match="true"]:hover {
+  background-color: rgb(253 230 138); /* amber-200 */
 }
 
 /* Loading spinner animation */
@@ -93,35 +105,326 @@
 
 /* Focus styles for accessibility */
 [data-hoverkit-term]:focus {
-  @apply ring-2 ring-blue-500 ring-offset-1 outline-none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgb(59 130 246); /* blue-500 */
+  box-shadow: 0 0 0 1px white, 0 0 0 3px rgb(59 130 246);
 }
 
 /* Mobile-friendly tap targets */
 @media (max-width: 768px) {
   [data-hoverkit-term] {
-    @apply min-h-[44px] min-w-[44px] inline-flex items-center justify-center;
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   [data-hoverkit-match="true"] {
-    @apply bg-yellow-200 border-2 border-black;
+    background-color: rgb(254 240 138); /* yellow-200 */
+    border-width: 2px;
+    border-color: rgb(0 0 0);
   }
   
   [data-hoverkit-term]:focus {
-    @apply ring-4 ring-blue-600;
+    box-shadow: 0 0 0 4px rgb(37 99 235); /* blue-600 */
   }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   [data-hoverkit-term] {
-    @apply transition-none;
+    transition-property: none;
   }
   
   [data-state=open],
   [data-state=closed] {
     animation: none !important;
   }
+}
+
+/* ============================================
+   CARD COMPONENT STYLES
+   All card styling compiled from Tailwind classes
+   ============================================ */
+
+/* Card wrapper */
+[data-card-id] {
+  pointer-events: auto;
+  cursor: default;
+}
+
+/* Card container with glow effect */
+[data-card-id] > div {
+  position: relative;
+  z-index: 50;
+  width: 20rem; /* Larger cards */
+  max-width: 90vw;
+  max-height: 50vh; /* Max 50% of viewport height */
+  border-radius: 1rem; /* rounded-2xl */
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  box-shadow: 0 30px 80px -40px rgba(129, 140, 248, 0.65);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile - make cards bigger on small screens */
+@media (max-width: 768px) {
+  [data-card-id] > div {
+    width: 85vw;
+    max-height: 60vh;
+  }
+}
+
+/* Enhanced shadow for top card */
+[data-card-id] > div[data-is-top="true"] {
+  box-shadow: 0 40px 120px -48px rgba(147, 197, 253, 0.9);
+}
+
+/* Glow effect (::before pseudo-element) */
+[data-card-id] > div::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  border-radius: inherit;
+  background: linear-gradient(to bottom right, rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.2), rgba(14, 165, 233, 0.3));
+  filter: blur(2rem);
+  opacity: 0.8;
+}
+
+/* Card content container */
+[data-card-id] > div > div {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+  border-width: 0;
+  background: linear-gradient(to bottom, rgba(2, 6, 23, 0.95), rgba(2, 6, 23, 0.9), rgba(2, 6, 23, 0.95));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Hover glow overlay */
+[data-card-id] > div > div > div:first-child {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 300ms;
+  pointer-events: none;
+}
+
+[data-card-id]:hover > div > div > div:first-child {
+  opacity: 1;
+}
+
+[data-card-id] > div > div > div:first-child > div {
+  position: absolute;
+  inset: -6rem;
+  background: linear-gradient(to right, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2), rgba(14, 165, 233, 0.25));
+  filter: blur(3rem);
+}
+
+/* Close button */
+[data-card-id] button[aria-label="Close"] {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  z-index: 10;
+  display: inline-flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(203 213 225); /* slate-300 */
+  transition: all 200ms;
+  cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-card-id] button[aria-label="Close"]:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: rgb(255 255 255);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+[data-card-id] button[aria-label="Close"]:active {
+  transform: scale(0.95);
+}
+
+[data-card-id] button[aria-label="Close"]:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgb(56 189 248); /* sky-400 ring */
+}
+
+/* Card content area */
+[data-card-id] > div > div > div:last-child {
+  position: relative;
+  padding: 1.25rem; /* p-5 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* space-y-3 */
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  /* Hide scrollbar but keep scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Hide scrollbar for Chrome/Safari */
+[data-card-id] > div > div > div:last-child::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card title */
+[data-card-id] h3 {
+  padding-right: 2.5rem; /* pr-10 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600; /* font-semibold */
+  letter-spacing: -0.025em; /* tracking-tight */
+}
+
+[data-card-id] h3 span {
+  background: linear-gradient(to right, rgb(216 180 254), rgb(249 168 212), rgb(186 230 253));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Loading state */
+[data-card-id] .hoverkit-card-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+[data-card-id] .hoverkit-card-loading > span {
+  position: relative;
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+}
+
+[data-card-id] .hoverkit-card-loading > span > span:first-child {
+  position: absolute;
+  display: inline-flex;
+  height: 100%;
+  width: 100%;
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  border-radius: 9999px;
+  background: linear-gradient(to right, rgba(168, 85, 247, 0.5), rgba(236, 72, 153, 0.5), rgba(14, 165, 233, 0.5));
+  opacity: 0.75;
+}
+
+[data-card-id] .hoverkit-card-loading > span > span:last-child {
+  position: relative;
+  display: inline-flex;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 9999px;
+  background: linear-gradient(to right, rgb(168 85 247), rgb(14 165 233));
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Card content text */
+[data-card-id] .hoverkit-card-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.75rem; /* text-xs */
+  color: rgb(203 213 225); /* text-slate-300 */
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  padding-bottom: 3.5rem; /* Space for fade gradient */
+  /* Hide scrollbar but keep scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Hide scrollbar for Chrome/Safari */
+[data-card-id] .hoverkit-card-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Content typography */
+[data-card-id] .hoverkit-card-content h1 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: rgb(255 255 255);
+}
+
+[data-card-id] .hoverkit-card-content h2 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: rgb(241 245 249); /* slate-100 */
+}
+
+[data-card-id] .hoverkit-card-content h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: rgb(226 232 240); /* slate-200 */
+}
+
+[data-card-id] .hoverkit-card-content strong {
+  font-weight: 600;
+  color: rgb(241 245 249); /* slate-100 */
+}
+
+/* Fade gradient at bottom */
+[data-card-id] .hoverkit-fade-gradient {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3.5rem;
+  background: linear-gradient(to top, rgb(2 6 23), rgba(2, 6, 23, 0.7), transparent);
+}
+
+/* Empty state */
+[data-card-id] .hoverkit-empty-state {
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1.25rem 1rem;
+  font-size: 0.75rem;
+  color: rgb(148 163 184); /* slate-400 */
 }
