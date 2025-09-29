@@ -1,6 +1,6 @@
 {
   "name": "cascade-cards-core",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Cascade Cards core — headless engine for CK3-style wiki hovercards",
   "type": "module",
   "main": "./dist/index.js",
