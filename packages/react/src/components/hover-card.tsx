@@ -136,20 +136,49 @@ const HoverCardContent = forwardRef<
       const mouseY = (e as MouseEvent).clientY;
       openCard(term, target, { x: mouseX, y: mouseY });
     };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const raw = e.target as Node;
+      const baseEl = (raw && (raw as any).nodeType === 1) ? (raw as Element) : (raw as any)?.parentElement as Element | null;
+      const target = baseEl?.closest?.('[data-hover-term]') as HTMLElement | null;
+      if (!target) return;
+
+      // Clear any pending hover timer
+      const timer = hoverTimers.get(target);
+      if (timer) {
+        window.clearTimeout(timer);
+        hoverTimers.delete(target);
+      }
+
+      e.preventDefault();
+      const term = target.getAttribute('data-hover-term');
+      if (!term) return;
+
+      const touch = e.changedTouches[0];
+      if (!touch) return;
+
+      const x = touch.clientX;
+      const y = touch.clientY;
+
+      try { console.debug('[HoverKit] Touch on term in card:', term); } catch {}
+      openCard(term, target, { x, y });
+    };
     
     // Use event delegation on the container
     container.addEventListener('mouseover', handleMouseOver);
     container.addEventListener('mouseout', handleMouseOut);
     container.addEventListener('click', handleClick);
+    container.addEventListener('touchend', handleTouchEnd);
     
     // Cleanup
     return () => {
       container.removeEventListener('mouseover', handleMouseOver);
       container.removeEventListener('mouseout', handleMouseOut);
       container.removeEventListener('click', handleClick);
+      container.removeEventListener('touchend', handleTouchEnd);
       hoverTimers.forEach(timer => window.clearTimeout(timer));
     };
-  }, [engine, resolvedContent]);
+  }, [engine, resolvedContent, openCard]);
 
   useEffect(() => {
     if (!engine || !resolvedContent) return;

@@ -371,6 +371,16 @@ export function HoverKitProvider({
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (event.button !== 0) return;
+      
+      // Don't close if pointer is over a card or a hover term
+      const target = event.target as HTMLElement;
+      const isOverCard = target.closest('[data-card-id]');
+      const isOverHoverTerm = target.closest('[data-hover-term]') || target.closest('[data-cascade-term]');
+      
+      if (isOverCard || isOverHoverTerm) {
+        return;
+      }
+      
       closeTopCardNow();
     };
 
